@@ -1,4 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 import { GetStaticProps } from 'next'
+import Image from 'next/image'
 import { api } from '../services/api'
 
 import { format, parseISO } from 'date-fns'
@@ -7,30 +9,49 @@ import { convertDurationToTimeString } from '../utils/convertDurationToTimeStrin
 
 import styles from '../styles/home.module.scss'
 
+import playGreen from '../../public/play-green.svg'
+
 interface EpisodesProps {
   id: string;
   title: string;
   members: string,
-  published_at: string,
+  publishedAt: string,
   thumbnail: string,
   description: string,
   duration: Number,
   durationAsString: string
   url: string
-
 }
 
 interface homeProps {
-  episodes: EpisodesProps[]
+  lastestEpisodes: EpisodesProps[],
+  allEpisodes: EpisodesProps[]
 }
 
-export default function Home(props: homeProps) {
+export default function Home({ lastestEpisodes, allEpisodes }: homeProps) {
   return (
     <div className={styles.homepage}>
       <section className={styles.latestEpisodes}>
         <h2>Ultimos Lançamentos</h2>
         <ul>
-
+          {
+            lastestEpisodes.map(episode => {
+              return (
+                <li key={episode.id}>
+                  <Image width={192} height={192} src={episode.thumbnail} alt={episode.title} />
+                  <div className={styles.episodesDetails}>
+                    <a href="">{episode.title}</a>
+                    <p>{episode.members}</p>
+                    <span>{episode.publishedAt}</span>
+                    <span>{episode.durationAsString}</span>
+                  </div>
+                  <button>
+                    <Image src={playGreen} alt="play episodio" />
+                  </button>
+                </li>
+              )
+            })
+          }
         </ul>
       </section>
 
@@ -60,6 +81,7 @@ export const getStaticProps: GetStaticProps = async () => {
       publishedAt: format(parseISO(episode.published_at), 'd MM yy', {
         locale: ptBR
       }),
+      thumbnail: episode.thumbnail,
       duration: Number(episode.file.duration),
       durationAsString: convertDurationToTimeString(Number(episode.file.duration)),
       url: episode.file.url,
