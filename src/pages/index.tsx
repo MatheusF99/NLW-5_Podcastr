@@ -66,7 +66,45 @@ export default function Home({ lastestEpisodes, allEpisodes }: homeProps) {
       </section>
 
       <section className={styles.allEpisodes}>
-
+        <h2>Todos os episodios</h2>
+        <table cellSpacing={0}>
+          <thead>
+            <th></th>
+            <th>Podcast</th>
+            <th>Integrantes</th>
+            <th>Data</th>
+            <th>Duracao</th>
+            <th></th>
+          </thead>
+          <tbody>
+            {allEpisodes.map(episode => {
+              return (
+                <tr key={episode.id}>
+                  <td style={{ width: 72 }}>
+                    <Image
+                      width={120}
+                      height={120}
+                      src={episode.thumbnail}
+                      alt={episode.title}
+                      objectFit="cover"
+                    />
+                  </td>
+                  <td>
+                    <a href="">{episode.title}</a>
+                  </td>
+                  <td>{episode.members}</td>
+                  <td style={{ width: 100 }}>{episode.publishedAt}</td>
+                  <td>{episode.durationAsString}</td>
+                  <td>
+                    <button type='button'>
+                      <Image src={playGreen} alt="play episodio" />
+                    </button>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
       </section>
     </div>
   )
@@ -88,7 +126,7 @@ export const getStaticProps: GetStaticProps = async () => {
       id: episode.id,
       title: episode.title,
       members: episode.members,
-      publishedAt: format(parseISO(episode.published_at), 'd MM yy', {
+      publishedAt: format(parseISO(episode.published_at), 'd MMM yy', {
         locale: ptBR
       }),
       thumbnail: episode.thumbnail,

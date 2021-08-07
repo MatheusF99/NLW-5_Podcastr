@@ -15,7 +15,7 @@ export default function Header() {
   return (
     <header className={styles.headerContainer}>
       <Image src={logo} alt="podcastr" />
-      <p>O melhor para voce ouvir, sempre</p>
+      <p>O melhor para voce ouvir, Sempre</p>
       <span>{curruntDate}</span>
     </header>
   )
