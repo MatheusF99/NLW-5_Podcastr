@@ -1,24 +1,59 @@
-import { GetStaticProps } from "next"
+import { GetStaticPaths, GetStaticProps } from "next"
+import Image from "next/image"
 import { useRouter } from "next/router"
 import { api } from "../../services/api"
+
+import arrowLeft from "../../../public/arrow-left.svg"
+
 import { convertDurationToTimeString } from "../../utils/convertDurationToTimeString"
 import { format, parseISO } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
 
-export default function Episode() {
+import styles from "./episode.module.scss"
+
+interface Episode {
+  id: string;
+  title: string;
+  members: string,
+  publishedAt: string,
+  thumbnail: string,
+  description: string,
+  duration: Number,
+  durationAsString: string
+  url: string
+}
+
+interface EpisodeProps {
+  episode: Episode
+}
+
+export default function Episode({ episode }: EpisodeProps) {
 
   const router = useRouter()
 
   return (
-    <h1>{router.query.slug}</h1>
+    <div className={styles.episode}>
+      <div className={styles.thumbnailContainer}>
+        <button>
+          <Image src={arrowLeft} alt="Voltar" />
+        </button>
+      </div>
+    </div>
   )
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking'
+  }
 }
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
 
   const { slug } = ctx.params
 
-  const { data } = await api.get(`/episode/${slug}`)
+  const { data } = await api.get(`/episodes/${slug}`)
 
   const episode = {
     id: data.id,
